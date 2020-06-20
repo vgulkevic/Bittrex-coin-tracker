@@ -1,0 +1,16 @@
+{
+  "name": "bittrex_coin_tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "description": "",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "node-signalr": "^2.0.5"
+  }
+}
