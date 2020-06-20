@@ -43,7 +43,6 @@ const subscribeToMarketSummary = (market) => {
 }
 
 const subscribe = (message) => {
-    console.log(message);
     client.connection.hub.call(hubName, 'Subscribe', message).then((result) => {
         console.log('success:', result)
 
@@ -56,18 +55,21 @@ const subscribe = (message) => {
 }
 
 const sendNotification = (message) => {
-    console.log(`Sending notification: {${message}}`);
-
+    console.log(message);
     const url = `https://api.telegram.org/bot${botKey}/sendMessage`;
     axiosInstance.post(url, {
         chat_id: chatId,
-        text: (message + "").replace(/\./g, "\\."),
-        parse_mode: "MarkdownV2"
+        text: message,
+        parse_mode: "HTML"
     }).catch((error) => {
         sendNotification("Error sending notification");
-        console.log(error);
-    }).then((res) => {
-        console.log(res);
+        console.log(error.response.data.description);
+
+        let sanitizedErrorDescription = error.response.data.description;
+        sanitizedErrorDescription = sanitizedErrorDescription.replace(/</g, "&lt;")
+        sanitizedErrorDescription = sanitizedErrorDescription.replace(/>/g, "&gt;")
+        sanitizedErrorDescription = sanitizedErrorDescription.replace(/&/g, "&amp;")
+        sendNotification(sanitizedErrorDescription);
     })
 };
 
@@ -83,6 +85,7 @@ const onMarketSummary = (message) => {
     const timeOfTheMessage = new Date(market.updatedAt);
 
     if (lastMessageSentAt && timeOfTheMessage.getTime() - lastMessageSentAt.getTime() < minutesInTime(10)) {
+        console.log("not sending because of time");
         return;
     }
 
@@ -100,11 +103,13 @@ const onMarketSummary = (message) => {
 
 function compareQuoteVolumeChange(currentQuoteVolume) {
     if (currentQuoteVolume < quoteVolume) {
+        console.log("quote volume is lowering");
         quoteVolume = currentQuoteVolume;
         return false;
     }
 
     if (currentQuoteVolume < 0.1) {
+        console.log("currentQuoteVolume is too low");
         return false;
     } else if (quoteVolume === 0) {
         return true;
@@ -122,12 +127,13 @@ function minutesInTime(minutes) {
 
 function buildMessageForMarketUpdate(market, percentChange, currentQuoteVolume) {
     let message = "";
-    let escapedSymbol = market.symbol.replace(/-/g, "\\-");
 
-    message += `*Market*: ${escapedSymbol}\n`;
-    message += `*Volume*: ${market.quoteVolume}\n`;
-    message += `*Volume change*: ${percentageChangeAtLastUpdate > 0 ? ((currentQuoteVolume - quoteVolume) / quoteVolume) : ("N/A")}\n`;
-    message += `*Percent change*: ${percentChange}`;
+    console.log("volume change: " + (currentQuoteVolume - quoteVolume) / quoteVolume);
+
+    message += `<b>Market</b>: ${market.symbol}\n`;
+    message += `<b>Volume</b>: ${market.quoteVolume}\n`;
+    message += `<b>Volume change</b>: ${percentageChangeAtLastUpdate > 0 ? ((currentQuoteVolume - quoteVolume) / quoteVolume) + "%" : ("N/A")}\n`;
+    message += `<b>Daily percent change</b>: ${percentChange}`;
 
     sendNotification(message);
 }
