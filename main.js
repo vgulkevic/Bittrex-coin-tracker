@@ -132,7 +132,7 @@ function buildMessageForMarketUpdate(market, percentChange, currentQuoteVolume) 
 
     message += `<b>Market</b>: ${market.symbol}\n`;
     message += `<b>Volume</b>: ${market.quoteVolume}\n`;
-    message += `<b>Volume change</b>: ${percentageChangeAtLastUpdate > 0 ? ((currentQuoteVolume - quoteVolume) / quoteVolume) + "%" : ("N/A")}\n`;
+    message += `<b>Volume change</b>: ${quoteVolume > 0 ? ((currentQuoteVolume - quoteVolume) / quoteVolume) + "%" : ("N/A")}\n`;
     message += `<b>Daily percent change</b>: ${percentChange}`;
 
     sendNotification(message);
