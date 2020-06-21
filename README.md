@@ -58,7 +58,8 @@ npm install
 ```
 8. Run the app in background mode:
 ```
-nohup node main.js > /dev/null 2>&1 &
+screen
+node main.js
 ```
 9. If everything is done correctly you will receive a `Starting to track the market` notification
 
