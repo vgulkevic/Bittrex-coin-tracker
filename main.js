@@ -89,10 +89,9 @@ const onMarketSummary = (message) => {
         return;
     }
 
-    const percentChangeAbs = Math.abs(parseFloat(market.percentChange));
     const percentChange = parseFloat(market.percentChange);
     const currentQuoteVolume = parseFloat(market.quoteVolume);
-    if (percentChangeAbs - Math.abs(percentageChangeAtLastUpdate) > 10 || compareQuoteVolumeChange(currentQuoteVolume)) {
+    if (Math.abs(percentChange - percentageChangeAtLastUpdate) > 10 || compareQuoteVolumeChange(currentQuoteVolume)) {
         buildMessageForMarketUpdate(market, percentChange, currentQuoteVolume);
 
         percentageChangeAtLastUpdate = percentChange;
