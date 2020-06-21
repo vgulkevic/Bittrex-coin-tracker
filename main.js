@@ -132,11 +132,14 @@ function buildMessageForMarketUpdate(market, percentChange, currentQuoteVolume) 
 
     message += `<b>Market</b>: ${market.symbol}\n`;
     message += `<b>Volume</b>: ${market.quoteVolume}\n`;
-    message += `<b>Volume change</b>: ${quoteVolume > 0 ? ((currentQuoteVolume - quoteVolume) / quoteVolume) + "%" : ("N/A")}\n`;
-    message += `<b>Daily percent change</b>: ${percentChange}`;
+    message += `<b>Volume change</b>: ${quoteVolume > 0 ? (roundNumberToDp(((currentQuoteVolume - quoteVolume) / quoteVolume) * 100, 2) ) + "%" : ("N/A")}\n`;
+    message += `<b>Daily percent change</b>: ${percentChange}%`;
 
     sendNotification(message);
 }
 
+function roundNumberToDp(number, dp) {
+    return Math.round((number + Number.EPSILON) * Math.pow(10, dp)) / Math.pow(10, dp)
+}
 
 client.start();
