@@ -20,7 +20,7 @@ Percent change: 20%
 2. How to get telegram chat id?
     - Search for your bot using global search in Telegram app.
     - Send any text message to your bot.
-    - Open the following link (replace <API-access-token> with your access token): https://api.telegram.org/bot<API-access-token>/getUpdates?offset=0
+    - Open the following link (replace <API-access-token> with your access token): `https://api.telegram.org/bot<API-access-token>/getUpdates?offset=0`
     - Find `"chat: {id: '123456789'}"`
 3. Set your `botKey` and `chatId` in `main.js`
 4. Replace `marketToTrack` in `main.js` with the ticker you want to track
